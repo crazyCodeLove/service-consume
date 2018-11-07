@@ -2,6 +2,7 @@ package com.sse.util;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -47,6 +48,48 @@ public class FetchServiceAddrUtil {
             e.printStackTrace();
         }
         return result;
+    }
+    
+    /**
+     * 随机获取一个微服务的地址
+     * @param eurekaIp
+     * @param eurekaPort
+     * @param servicename
+     * @return
+     */
+    public static String getOneServiceAddr(String eurekaIp, String eurekaPort, String servicename) {
+        List<String> result = new ArrayList<>();
+        String url = "http://" + eurekaIp + ":" + eurekaPort + "/eureka/apps/" + servicename;
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(url)//请求接口。如果需要传参拼接到接口后面。
+                .addHeader("Content-Type","application/json")
+                .addHeader("Accept","application/xml")
+                .get()
+                .build();//创建Request 对象
+        Response response = null;
+        try {
+            response = okHttpClient.newCall(request).execute();
+            if (response.isSuccessful()) {
+                String responseContent = response.body().string();
+                Matcher matcher = Pattern.compile("<homePageUrl>(.+?)</homePageUrl>").matcher(responseContent);
+                while (matcher.find()) {
+                    String homepage = matcher.group(1).trim();
+                    if (homepage.endsWith("/")) {
+						homepage = homepage.substring(0, homepage.length()-1);
+					}
+                    result.add(homepage);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (result.isEmpty()) {
+            return "";
+        } else {
+            Collections.shuffle(result);
+            return result.get(0);
+        }
     }
 
 	public static void main(String[] args) {
