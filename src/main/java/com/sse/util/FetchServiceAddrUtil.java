@@ -7,8 +7,16 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sse.model.RequestParamBase;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class FetchServiceAddrUtil {
@@ -91,13 +99,39 @@ public class FetchServiceAddrUtil {
             return result.get(0);
         }
     }
+    
+    public static void postRequest() {
+    	OkHttpClient client = new OkHttpClient();
+    	RequestParamBase param = RequestParamBase.builder().id(24).name("requestParam").build();
+    	ObjectMapper mapper = new ObjectMapper();
+    	String json = "";
+    	try {
+			json = mapper.writeValueAsString(param);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+    	RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+    	Request request = new Request.Builder().post(body).url("http://127.0.0.1:8060/student/1").build();
+    	try {
+    		Response response = client.newCall(request).execute();
+    		if (response.isSuccessful()) {
+    			String responseString = response.body().string();
+				com.sse.model.Response result = mapper.readValue(responseString, com.sse.model.Response.class);
+				System.out.println(result);
+			}
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+    	
+    }
 
 	public static void main(String[] args) {
-		List<String> result = getAllServiceAddr("127.0.0.1", "8010", "SERVICE-PROVIDER");
+		/*List<String> result = getAllServiceAddr("127.0.0.1", "8010", "SERVICE-PROVIDER");
 		for(String s:result) {
 			System.out.println(s);
-		}
+		}*/
 		
+		postRequest();
 
 	}
 
