@@ -1,12 +1,13 @@
 package com.sse.controller;
 
-import com.sse.client.StudentServiceClient;
-import com.sse.model.RequestParamBase;
-import com.sse.model.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.sse.api.StudentServiceApi;
+import com.sse.model.RequestParamBase;
+import com.sse.model.Response;
 
 /**
  * @author pczhao
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ServiceConsumerController {
 
     @Autowired
-    private StudentServiceClient client;
+    private StudentServiceApi client;
 
     @RequestMapping(value = "/consume", method = RequestMethod.GET)
     public void consume() {
