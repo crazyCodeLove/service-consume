@@ -1,8 +1,10 @@
 server:
   port: 8080
+  servlet:
+    context-path: /student-service-consume
 spring:
   application:
-    name: service-consume
+    name: student-service-consume
 
 eureka:
   instance:
