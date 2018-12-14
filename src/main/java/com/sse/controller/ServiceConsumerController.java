@@ -1,7 +1,8 @@
 package com.sse.controller;
 
 import com.sse.api.StudentServiceApi;
-import com.sse.model.ResponseBase;
+import com.sse.model.RequestParamHolder;
+import com.sse.model.ResponseResultHolder;
 import com.sse.model.student.Fruit;
 import com.sse.model.student.StudentParam;
 import com.sse.model.student.StudentResponse;
@@ -28,49 +29,54 @@ public class ServiceConsumerController {
     @RequestMapping(value = "/consume", method = RequestMethod.GET)
     public void consume() {
         int num = 6;
-        StudentParam[] params = new StudentParam[num];
+        StudentParam[] stuParams = new StudentParam[num];
         for (int i = 0; i < num; i++) {
-            params[i] = new StudentParam();
+            stuParams[i] = new StudentParam();
         }
-        params[0].setId(15);
-        params[0].setName("good");
+        stuParams[0].setId(15);
+        stuParams[0].setName("good");
         ArrayList<Fruit> fruits0 = new ArrayList<>();
-        params[0].setFruits(fruits0);
+        stuParams[0].setFruits(fruits0);
         fruits0.add(Fruit.builder().price(15).color("red").build());
 
-        params[1].setId(15);
+        stuParams[1].setId(15);
 //        params[1].setName("good");
         ArrayList<Fruit> fruits1 = new ArrayList<>();
-        params[1].setFruits(fruits1);
+        stuParams[1].setFruits(fruits1);
         fruits1.add(Fruit.builder().price(15).color("red").build());
 
-        params[2].setId(15);
-        params[2].setName("good");
+        stuParams[2].setId(15);
+        stuParams[2].setName("good");
         ArrayList<Fruit> fruits2 = new ArrayList<>();
-        params[2].setFruits(fruits2);
+        stuParams[2].setFruits(fruits2);
 //        fruits2.add(Fruit.builder().price(15).color("red").build());
 
-        params[3].setId(15);
-        params[3].setName("good");
+        stuParams[3].setId(15);
+        stuParams[3].setName("good");
         ArrayList<Fruit> fruits3 = new ArrayList<>();
-        params[3].setFruits(fruits3);
+        stuParams[3].setFruits(fruits3);
         fruits3.add(Fruit.builder().color("red").build());
 
-        params[4].setId(15);
-        params[4].setName("good");
+        stuParams[4].setId(15);
+        stuParams[4].setName("good");
         ArrayList<Fruit> fruits4 = new ArrayList<>();
-        params[4].setFruits(fruits4);
+        stuParams[4].setFruits(fruits4);
         fruits4.add(Fruit.builder().price(15).build());
 
 //        params[5].setId(15);
-        params[5].setName("good");
+        stuParams[5].setName("good");
         ArrayList<Fruit> fruits5 = new ArrayList<>();
-        params[5].setFruits(fruits5);
+        stuParams[5].setFruits(fruits5);
         fruits5.add(Fruit.builder().price(15).color("red").build());
 
+        RequestParamHolder<StudentParam>[] requestHolders = new RequestParamHolder[num];
+        for (int i = 0; i < num; i++) {
+            requestHolders[i] = new RequestParamHolder<>();
+            requestHolders[i].setParam(stuParams[i]);
+        }
         Random random = new Random();
-        for (int i = 0; i < 20; i++) {
-            ResponseBase result = client.getStudent(params[random.nextInt(num)]);
+        for (int i = 0; i < 10; i++) {
+            ResponseResultHolder<StudentResponse> result = client.getStudent(requestHolders[random.nextInt(num)]);
             System.out.println((i + 1) + ":" + result.toString());
 
         }
